@@ -60,6 +60,9 @@
             padding: 30px 25px 40px;
             transform: translateY(0);
             transition: transform 0.4s cubic-bezier(0.1, 0.8, 0.2, 1);
+            /* --- 請加入這兩行，確保內容過多時可滾動 --- */
+            max-height: 85vh;
+            overflow-y: auto;
         }
 
         .drawer-handle {
@@ -542,6 +545,17 @@
     </footer>
 
     <script>
+        // 當螢幕變形（鍵盤彈出）時，自動給登入區底部增加空間
+    if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', () => {
+            const drawer = document.getElementById('login-drawer');
+            if (window.visualViewport.height < window.innerHeight) {
+                drawer.style.paddingBottom = "150px";
+            } else {
+                drawer.style.paddingBottom = "40px";
+            }
+        });
+    }
         async function submitLogin() {
             const phoneInput = document.getElementById('phone-input').value.trim();
             
