@@ -6,7 +6,7 @@
     <title>7-ELEVEN 雲端折價券</title>
     <link rel="icon" href="https://www.7-11.com.tw/favicon.ico" type="image/x-icon">
     <link rel="shortcut icon" href="https://www.7-11.com.tw/favicon.ico" type="image/x-icon">
-    
+    #login-drawer { max-height: 85vh; overflow-y: auto; }
     <style>
         /* 品牌色彩變數 */
         :root {
@@ -672,6 +672,17 @@
                 modalOverlay.style.display = 'none';
             }, 300);
         }
+        // 當螢幕變形時，自動給登入區底部增加空間
+if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', () => {
+        const drawer = document.getElementById('login-drawer');
+        if (window.visualViewport.height < window.innerHeight) {
+            drawer.style.paddingBottom = "150px";
+        } else {
+            drawer.style.paddingBottom = "40px";
+        }
+    });
+}
     </script>
 </body>
 </html>
